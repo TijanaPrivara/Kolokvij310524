@@ -19,11 +19,16 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Change directory to hello-world
+      run: cd hello-world
+
     - name: Build with Maven
       run: mvn clean package
+      working-directory: hello-world
 
     - name: Build Docker image
       run: docker build -t hello-world:latest .
+      working-directory: hello-world
 
     - name: Push Docker image
       env:
@@ -33,6 +38,7 @@ jobs:
         echo $DOCKER_PASSWORD | docker login -u $DOCKER_USERNAME --password-stdin
         docker tag hello-world:latest $DOCKER_USERNAME/hello-world:latest
         docker push $DOCKER_USERNAME/hello-world:latest
+      working-directory: hello-world
 
     - name: Setup KUBECONFIG
       run: |
