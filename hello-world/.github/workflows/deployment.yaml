@@ -7,7 +7,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -34,9 +33,12 @@ jobs:
         docker tag hello-world:latest $DOCKER_USERNAME/hello-world:latest
         docker push $DOCKER_USERNAME/hello-world:latest
 
+    - name: Setup KUBECONFIG
+      run: |
+        echo "${{ secrets.KUBECONFIG }}" > kubeconfig
+        export KUBECONFIG=kubeconfig
+
     - name: Deploy to Kubernetes
-      env:
-        KUBECONFIG: ${{ secrets.KUBECONFIG }}
       run: |
         kubectl apply -f deployment.yaml
 
